@@ -14,6 +14,7 @@ class Localization:
         self.dt = dt
         self.gen_init_state()
         self.gen_hamiltonian()
+        self.ipr = []
 
     def gen_init_state(self):
         self.psi = np.zeros(self.N)
@@ -42,9 +43,13 @@ class Localization:
         d_psi = 1j * self.dt * (self.hamiltonian @ self.psi)
         self.psi = self.psi + d_psi
         self.psi = self.psi / self.norm(self.psi)
+        self.ipr.append(self.get_ipr())
 
     def prob(self):
         return np.real(np.conjugate(self.psi) * self.psi)
+
+    def get_ipr(self):
+        return np.sum(np.abs(self.psi) ** 4)
 
 
 if __name__ == '__main__':
@@ -55,6 +60,7 @@ if __name__ == '__main__':
     parser.add_argument('--t', '-t', default=10, type=float)
     parser.add_argument('--W', '-W', default=0, type=float)
     parser.add_argument('--dt', '-dt', default=1e-3, type=float)
+    parser.add_argument('--frames', '-f', default=1000, type=int)
     args = parser.parse_args()
     if not args.x0:
         args.x0 = int(args.N / 2)
@@ -64,19 +70,28 @@ if __name__ == '__main__':
     localization = Localization(
         args.N, args.x0, args.mu, args.t, args.W, args.dt)
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(2)
 
     def animate(i):
-        x = np.arange(localization.N)
-        y = localization.prob()
+        x1 = np.arange(localization.N)
+        y1 = localization.prob()
 
-        ax.clear()
-        ax.plot(x, y)
-        ax.set_xlim([0, localization.N])
-        ax.set_ylim([0, 1.2 * np.max(y)])
+        ax[0].clear()
+        ax[0].plot(x1, y1)
+        ax[0].set_xlim([0, localization.N])
+        ax[0].set_ylim([0, 1.2 * np.max(y1)])
+
+        x2 = np.arange(len(localization.ipr))
+        y2 = localization.ipr
+
+        ax[1].clear()
+        ax[1].plot(x2, y2)
+        ax[1].set_xlim([0, args.frames])
+        ax[1].set_ylim([0, 0.5])
 
         localization.update()
 
-    ani = FuncAnimation(fig, animate, frames=10000, interval=1, repeat=False)
+    ani = FuncAnimation(fig, animate, frames=args.frames,
+                        interval=1, repeat=False)
 
     plt.show()
