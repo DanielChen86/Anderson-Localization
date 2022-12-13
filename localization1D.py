@@ -73,10 +73,14 @@ if __name__ == '__main__':
     fig, ax = plt.subplots(2)
 
     def animate(i):
+        plt.subplots_adjust(hspace=1)
+
         x1 = np.arange(localization.N)
         y1 = localization.prob()
 
         ax[0].clear()
+        ax[0].set_title(r'$|\psi(x)|^2$')
+        ax[0].set_xlabel(r'$x$')
         ax[0].plot(x1, y1)
         ax[0].set_xlim([0, localization.N])
         ax[0].set_ylim([0, 1.2 * np.max(y1)])
@@ -85,9 +89,11 @@ if __name__ == '__main__':
         y2 = localization.ipr
 
         ax[1].clear()
+        ax[1].set_title(r'$\sum |\psi(x)|^4$')
+        ax[1].set_xlabel(r'$t$')
         ax[1].plot(x2, y2)
         ax[1].set_xlim([0, args.frames])
-        ax[1].set_ylim([0, 0.5])
+        ax[1].set_ylim([0, 0.6])
 
         localization.update()
 
