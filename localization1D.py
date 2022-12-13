@@ -26,13 +26,13 @@ class Localization:
             self.hamiltonian[n, n] += self.mu * \
                 np.cos(2 * np.pi * n * (2 / (1 + np.sqrt(5))))
 
-        self.hamiltonian[0, 1] = self.t
-        self.hamiltonian[0, self.N-1] = self.t
+        self.hamiltonian[0, 1] = -self.t
+        self.hamiltonian[0, self.N-1] = -self.t
         for n in range(1, self.N-1):
-            self.hamiltonian[n, n-1] = self.t
-            self.hamiltonian[n, n+1] = self.t
-        self.hamiltonian[self.N-1, self.N-2] = self.t
-        self.hamiltonian[self.N-1, 0] = self.t
+            self.hamiltonian[n, n-1] = -self.t
+            self.hamiltonian[n, n+1] = -self.t
+        self.hamiltonian[self.N-1, self.N-2] = -self.t
+        self.hamiltonian[self.N-1, 0] = -self.t
         for n in range(self.N):
             self.hamiltonian[n, n] += (np.random.rand() * 2 - 1) * self.W
 
