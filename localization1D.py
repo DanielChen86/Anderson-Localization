@@ -18,7 +18,7 @@ class Localization:
 
     def gen_init_state(self):
         self.psi = np.zeros(self.N)
-        self.psi[self.x0] = self.x0
+        self.psi[self.x0] = 1
 
     def gen_hamiltonian(self):
         self.hamiltonian = np.zeros((self.N, self.N))
